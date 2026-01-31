@@ -1,0 +1,36 @@
+{
+  "name": "single-spa-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Teo's portfolio website built with single-spa micro-frontends",
+  "author": "Teo",
+  "license": "ISC",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "npm-run-all --parallel start:shared start:navbar start:main-content start:root-config",
+    "start:root-config": "npm run start --workspace=@portfolio/root-config",
+    "start:shared": "npm run start --workspace=@portfolio/shared",
+    "start:navbar": "npm run start --workspace=@portfolio/navbar",
+    "start:main-content": "npm run start --workspace=@portfolio/main-content",
+    "dev": "concurrently -n shared,navbar,main,root -c blue,green,yellow,magenta \"npm run start:shared\" \"npm run start:navbar\" \"npm run start:main-content\" \"npm run start:root-config\"",
+    "build": "npm-run-all build:*",
+    "build:shared": "npm run build --workspace=@portfolio/shared",
+    "build:navbar": "npm run build --workspace=@portfolio/navbar",
+    "build:main-content": "npm run build --workspace=@portfolio/main-content",
+    "build:root-config": "npm run build --workspace=@portfolio/root-config",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.4.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
