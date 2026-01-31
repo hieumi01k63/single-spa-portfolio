@@ -1,0 +1,72 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
+
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === "production";
+
+  return {
+    entry: "./src/index.ts",
+    experiments: {
+      outputModule: true,
+    },
+    output: {
+      filename: "portfolio-root-config.js",
+      path: path.resolve(__dirname, "dist"),
+      publicPath: isProduction ? "/" : "http://localhost:9000/",
+      clean: true,
+      library: {
+        type: "module",
+      },
+    },
+    resolve: {
+      extensions: [".ts", ".tsx", ".js", ".jsx"],
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(ts|tsx|js|jsx)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env", "@babel/preset-typescript"],
+            },
+          },
+        },
+      ],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: "./src/index.html",
+        inject: false,
+      }),
+      new CopyWebpackPlugin({
+        patterns: [{ from: "public", to: "" }],
+      }),
+    ],
+    externalsType: "module",
+    externals: {
+      "single-spa": "single-spa",
+      "@portfolio/navbar": "@portfolio/navbar",
+      "@portfolio/main-content": "@portfolio/main-content",
+    },
+    devServer: {
+      port: 9000,
+      historyApiFallback: true,
+      static: {
+        directory: path.join(__dirname, "public"),
+      },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Headers":
+          "X-Requested-With, content-type, Authorization",
+      },
+      hot: true,
+      allowedHosts: "all",
+    },
+    devtool: isProduction ? "source-map" : "eval-source-map",
+  };
+};
