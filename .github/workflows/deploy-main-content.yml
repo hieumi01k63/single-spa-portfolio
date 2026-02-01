@@ -6,8 +6,6 @@ on:
     paths:
       - "packages/main-content/**"
       - "packages/shared/**" # Rebuild when shared changes
-  repository_dispatch:
-    types: [shared-updated] # Triggered by shared workflow
   workflow_dispatch: # Allow manual trigger
 
 env:

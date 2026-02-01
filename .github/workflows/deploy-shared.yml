@@ -53,23 +53,12 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{"files":["https://assets.teofe.dev/shared/portfolio-shared.js","https://assets.teofe.dev/shared/portfolio-shared.js.map"]}'
 
-  # Trigger dependent MFE rebuilds
-  trigger-dependents:
-    needs: build-and-deploy
-    runs-on: ubuntu-latest
-    name: Trigger Dependent Rebuilds
-
-    steps:
-      - name: Trigger Navbar rebuild
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: shared-updated
-          client-payload: '{"triggered_by": "shared"}'
-
-      - name: Trigger Main Content rebuild
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: shared-updated
-          client-payload: '{"triggered_by": "shared"}'
+      - name: Summary
+        run: |
+          echo "## Shared Deployment Complete :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Bundle**: \`portfolio-shared.js\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache**: Purged" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> **Note:** Navbar and Main Content will rebuild automatically via path triggers." >> $GITHUB_STEP_SUMMARY
