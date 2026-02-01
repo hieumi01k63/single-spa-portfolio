@@ -43,14 +43,21 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: r2 object put ${{ env.R2_BUCKET }}/main-content/portfolio-main-content.js --file=./packages/main-content/dist/portfolio-main-content.js --content-type=application/javascript --remote
+          command: r2 object put ${{ env.R2_BUCKET }}/main-content/portfolio-main-content.js --file=./packages/main-content/dist/portfolio-main-content.js --content-type=application/javascript --cache-control="public, max-age=0, must-revalidate" --remote
 
       - name: Upload source map to R2
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: r2 object put ${{ env.R2_BUCKET }}/main-content/portfolio-main-content.js.map --file=./packages/main-content/dist/portfolio-main-content.js.map --content-type=application/json --remote
+          command: r2 object put ${{ env.R2_BUCKET }}/main-content/portfolio-main-content.js.map --file=./packages/main-content/dist/portfolio-main-content.js.map --content-type=application/json --cache-control="public, max-age=0, must-revalidate" --remote
+
+      - name: Purge Cloudflare Cache
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"files":["https://assets.teofe.dev/main-content/portfolio-main-content.js","https://assets.teofe.dev/main-content/portfolio-main-content.js.map"]}'
 
       - name: Summary
         run: |
@@ -58,3 +65,4 @@ jobs:
           echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Bundle**: \`portfolio-main-content.js\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache**: Purged" >> $GITHUB_STEP_SUMMARY
