@@ -43,14 +43,14 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: r2 object put ${{ env.R2_BUCKET }}/navbar/portfolio-navbar.js --file=./packages/navbar/dist/portfolio-navbar.js --content-type=application/javascript
+          command: r2 object put ${{ env.R2_BUCKET }}/navbar/portfolio-navbar.js --file=./packages/navbar/dist/portfolio-navbar.js --content-type=application/javascript --remote
 
       - name: Upload source map to R2
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: r2 object put ${{ env.R2_BUCKET }}/navbar/portfolio-navbar.js.map --file=./packages/navbar/dist/portfolio-navbar.js.map --content-type=application/json
+          command: r2 object put ${{ env.R2_BUCKET }}/navbar/portfolio-navbar.js.map --file=./packages/navbar/dist/portfolio-navbar.js.map --content-type=application/json --remote
 
       - name: Summary
         run: |
