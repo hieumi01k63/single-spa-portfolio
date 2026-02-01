@@ -5,6 +5,23 @@ const path = require("path");
 module.exports = (env, argv) => {
   const isProduction = argv.mode === "production";
 
+  const cdnBaseUrl = "https://teofe.dev";
+
+  const mfeUrls = {
+    navbar: isProduction
+      ? `${cdnBaseUrl}/navbar/portfolio-navbar.js`
+      : "http://localhost:9001/portfolio-navbar.js",
+    mainContent: isProduction
+      ? `${cdnBaseUrl}/main-content/portfolio-main-content.js`
+      : "http://localhost:9002/portfolio-main-content.js",
+    shared: isProduction
+      ? `${cdnBaseUrl}/shared/portfolio-shared.js`
+      : "http://localhost:9003/portfolio-shared.js",
+    rootConfig: isProduction
+      ? "/portfolio-root-config.js"
+      : "http://localhost:9000/portfolio-root-config.js",
+  };
+
   return {
     entry: "./src/index.ts",
     experiments: {
@@ -38,8 +55,13 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: "./src/index.html",
+        template: "./src/index.ejs",
         inject: false,
+        templateParameters: {
+          isProduction,
+          mfeUrls,
+          cdnBaseUrl,
+        },
       }),
       new CopyWebpackPlugin({
         patterns: [{ from: "public", to: "" }],

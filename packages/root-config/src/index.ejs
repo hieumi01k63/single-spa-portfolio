@@ -12,22 +12,24 @@
 
     <!-- Preconnect to CDNs -->
     <link rel="preconnect" href="https://esm.sh" />
+    <% if (!isProduction) { %>
     <link rel="preconnect" href="http://localhost:9001" />
     <link rel="preconnect" href="http://localhost:9002" />
     <link rel="preconnect" href="http://localhost:9003" />
+    <% } else { %>
+    <link rel="preconnect" href="<%= cdnBaseUrl %>" />
+    <% } %>
 
-    <!--
-    Make sure to put this BEFORE any <script type="module"> elements or any System.import() calls, but
-    AFTER all other import maps
-    -->
+    <% if (!isProduction) { %>
+    <!-- Import Map Overrides - Development only -->
     <script
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js"
     ></script>
-    <!-- optionally include the UI for import map overrides -->
     <import-map-overrides-full
       show-when-local-storage="devtools"
     ></import-map-overrides-full>
+    <% } %>
 
     <!-- Native Import Map -->
     <script type="importmap">
@@ -46,47 +48,12 @@
           "clsx": "https://esm.sh/clsx@2.1.0",
           "class-variance-authority": "https://esm.sh/class-variance-authority@0.7.0?external=clsx",
           "tailwind-merge": "https://esm.sh/tailwind-merge@2.2.0",
-          "@portfolio/navbar": "http://localhost:9001/portfolio-navbar.js",
-          "@portfolio/main-content": "http://localhost:9002/portfolio-main-content.js",
-          "@portfolio/shared": "http://localhost:9003/portfolio-shared.js"
+          "@portfolio/navbar": "<%= mfeUrls.navbar %>",
+          "@portfolio/main-content": "<%= mfeUrls.mainContent %>",
+          "@portfolio/shared": "<%= mfeUrls.shared %>"
         }
       }
     </script>
-
-    <!-- Global Tailwind CSS via CDN for development -->
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              border: "hsl(var(--border))",
-              input: "hsl(var(--input))",
-              ring: "hsl(var(--ring))",
-              background: "hsl(var(--background))",
-              foreground: "hsl(var(--foreground))",
-              primary: {
-                DEFAULT: "hsl(var(--primary))",
-                foreground: "hsl(var(--primary-foreground))",
-              },
-              secondary: {
-                DEFAULT: "hsl(var(--secondary))",
-                foreground: "hsl(var(--secondary-foreground))",
-              },
-              muted: {
-                DEFAULT: "hsl(var(--muted))",
-                foreground: "hsl(var(--muted-foreground))",
-              },
-              accent: {
-                DEFAULT: "hsl(var(--accent))",
-                foreground: "hsl(var(--accent-foreground))",
-              },
-            },
-          },
-        },
-      };
-    </script> -->
 
     <style>
       /* CSS Custom Properties for theming (shadcn-ui compatible) */
@@ -195,9 +162,6 @@
     <main id="main-content-container"></main>
 
     <!-- Bootstrap single-spa with native ES modules -->
-    <script
-      type="module"
-      src="http://localhost:9000/portfolio-root-config.js"
-    ></script>
+    <script type="module" src="<%= mfeUrls.rootConfig %>"></script>
   </body>
 </html>

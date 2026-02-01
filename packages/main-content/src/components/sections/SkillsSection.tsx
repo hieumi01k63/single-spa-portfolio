@@ -16,13 +16,7 @@ const skillCategories: SkillCategory[] = [
   {
     name: "State Management",
     icon: "🔄",
-    skills: [
-      "Zustand",
-      "Redux",
-      "TanStack Query",
-      "Jotai",
-      "Pinia",
-    ],
+    skills: ["Zustand", "Redux", "TanStack Query", "Jotai", "Pinia"],
   },
   {
     name: "Styling & UI",
@@ -61,7 +55,14 @@ const skillCategories: SkillCategory[] = [
   {
     name: "DevOps & Tools",
     icon: "🛠️",
-    skills: ["Git", "Docker", "Azure DevOps", "Datadog", "LaunchDarkly", "CI/CD"],
+    skills: [
+      "Git",
+      "Docker",
+      "Azure DevOps",
+      "Datadog",
+      "LaunchDarkly",
+      "CI/CD",
+    ],
   },
   {
     name: "Core Languages",

@@ -1,0 +1,60 @@
+name: Deploy Main Content
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/main-content/**"
+      - "packages/shared/**" # Rebuild when shared changes
+  repository_dispatch:
+    types: [shared-updated] # Triggered by shared workflow
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  NODE_VERSION: "22"
+  R2_BUCKET: "portfolio-mfe-assets"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build & Deploy Main Content to R2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared (dependency)
+        run: npm run build --workspace=@portfolio/shared
+
+      - name: Build main-content
+        run: npm run build --workspace=@portfolio/main-content
+
+      - name: Deploy to Cloudflare R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/main-content/portfolio-main-content.js --file=./packages/main-content/dist/portfolio-main-content.js --content-type=application/javascript
+
+      - name: Upload source map to R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/main-content/portfolio-main-content.js.map --file=./packages/main-content/dist/portfolio-main-content.js.map --content-type=application/json
+
+      - name: Summary
+        run: |
+          echo "## Main Content Deployment Complete :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Bundle**: \`portfolio-main-content.js\`" >> $GITHUB_STEP_SUMMARY
