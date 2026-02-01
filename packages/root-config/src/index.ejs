@@ -20,17 +20,6 @@
     <link rel="preconnect" href="<%= cdnBaseUrl %>" />
     <% } %>
 
-    <% if (!isProduction) { %>
-    <!-- Import Map Overrides - Development only -->
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js"
-    ></script>
-    <import-map-overrides-full
-      show-when-local-storage="devtools"
-    ></import-map-overrides-full>
-    <% } %>
-
     <!-- Native Import Map -->
     <script type="importmap">
       {
@@ -54,6 +43,15 @@
         }
       }
     </script>
+
+      <!-- Import Map Overrides - Development only -->
+      <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js"
+      ></script>
+      <import-map-overrides-full
+        show-when-local-storage="devtools"
+      ></import-map-overrides-full>
 
     <style>
       /* CSS Custom Properties for theming (shadcn-ui compatible) */
