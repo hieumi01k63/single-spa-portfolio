@@ -61,7 +61,7 @@ export function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-2xl font-bold text-foreground">Teo</h1>
+          <h1 className="text-2xl font-bold text-foreground">Teooooo</h1>
           <p className="text-sm text-muted-foreground">
             Senior Frontend Engineer
           </p>
