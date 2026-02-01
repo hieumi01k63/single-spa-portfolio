@@ -61,7 +61,7 @@ export function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h1 className="text-2xl font-bold text-foreground">Teo</h1>
+          <h1 className="text-2xl font-bold text-foreground">Teooo</h1>
           <p className="text-sm text-muted-foreground">
             Senior Frontend Engineer
           </p>
@@ -83,10 +83,9 @@ export function Navbar() {
                 className={`
                   w-full flex items-center gap-3 px-4 py-3 rounded-lg
                   text-sm font-medium transition-all duration-200
-                  ${
-                    activeSectionId === item.id
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ${activeSectionId === item.id
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }
                 `}
               >
