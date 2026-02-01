@@ -5,7 +5,9 @@ const path = require("path");
 module.exports = (env, argv) => {
   const isProduction = argv.mode === "production";
 
-  const cdnBaseUrl = "https://teofe.dev";
+  // Read from environment variable (set in GitHub Actions), fallback for local
+  const cdnBaseUrl =
+    process.env.CDN_BASE_URL || "https://assets.teofe.dev";
 
   const mfeUrls = {
     navbar: isProduction

@@ -31,8 +31,16 @@ jobs:
       - name: Build root-config
         run: npm run build --workspace=@portfolio/root-config
         env:
-          # R2 custom domain
-          CDN_BASE_URL: https://teofe.dev
+          # R2 custom domain for MFE assets (separate from Pages domain)
+          CDN_BASE_URL: https://assets.teofe.dev
+
+      - name: Create Pages project if not exists
+        uses: cloudflare/wrangler-action@v3
+        continue-on-error: true
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create portfolio-root --production-branch=main
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
