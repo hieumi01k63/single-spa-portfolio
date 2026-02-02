@@ -5,38 +5,42 @@ This project uses **GitHub Actions** for CI/CD, deploying to **Cloudflare Pages*
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         GitHub Actions                           │
-├─────────────────┬─────────────────┬─────────────────┬───────────┤
-│  root-config    │    shared       │    navbar       │   main    │
-│  workflow       │    workflow     │    workflow     │  content  │
-└────────┬────────┴────────┬────────┴────────┬────────┴─────┬─────┘
-         │                 │                 │              │
-         ▼                 ▼                 ▼              ▼
-┌─────────────────┐  ┌──────────────────────────────────────────┐
-│ Cloudflare      │  │           Cloudflare R2                  │
-│ Pages           │  │  portfolio-mfe-assets bucket             │
-│                 │  │  ├── shared/portfolio-shared.js          │
-│ index.html      │  │  ├── navbar/portfolio-navbar.js          │
-│ root-config.js  │  │  └── main-content/portfolio-main.js      │
-└────────┬────────┘  └──────────────────┬───────────────────────┘
-         │                              │
-         └──────────────┬───────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           GitHub Actions                                 │
+├──────────────────┬──────────────────┬──────────────────┬────────────────┤
+│   root-config    │     shared       │     navbar       │  main-content  │
+│    workflow      │    workflow      │    workflow      │    workflow    │
+└────────┬─────────┴────────┬─────────┴────────┬─────────┴───────┬────────┘
+         │                  │                  │                 │
+         ▼                  ▼                  ▼                 ▼
+┌─────────────────┐  ┌────────────────────────────────────────────────────┐
+│  Cloudflare     │  │              Cloudflare R2                         │
+│  Pages          │  │         portfolio-mfe-assets bucket                │
+│                 │  │                                                    │
+│  teofe.dev      │  │  assets.teofe.dev                                  │
+│  ├── index.html │  │  ├── shared/portfolio-shared.js                    │
+│  └── root.js    │  │  ├── navbar/portfolio-navbar.js                    │
+│                 │  │  └── main-content/portfolio-main-content.js        │
+└────────┬────────┘  └──────────────────────┬─────────────────────────────┘
+         │                                  │
+         └──────────────┬───────────────────┘
                         ▼
               ┌─────────────────┐
               │  Cloudflare CDN │
-              │  portfolio.dev  │
+              │   (automatic)   │
               └─────────────────┘
 ```
 
 ## Pipeline Triggers
 
-| Workflow                  | Triggers On                                        | Deploys To               |
-| ------------------------- | -------------------------------------------------- | ------------------------ |
-| `deploy-root-config.yml`  | `packages/root-config/**`                          | Cloudflare Pages         |
-| `deploy-shared.yml`       | `packages/shared/**`                               | R2 + triggers dependents |
-| `deploy-navbar.yml`       | `packages/navbar/**` OR `packages/shared/**`       | R2                       |
-| `deploy-main-content.yml` | `packages/main-content/**` OR `packages/shared/**` | R2                       |
+| Workflow                  | Triggers On                                        | Deploys To       |
+| ------------------------- | -------------------------------------------------- | ---------------- |
+| `deploy-root-config.yml`  | `packages/root-config/**`                          | Cloudflare Pages |
+| `deploy-shared.yml`       | `packages/shared/**`                               | R2               |
+| `deploy-navbar.yml`       | `packages/navbar/**` OR `packages/shared/**`       | R2               |
+| `deploy-main-content.yml` | `packages/main-content/**` OR `packages/shared/**` | R2               |
+
+When `packages/shared/**` changes, **three workflows run in parallel**: shared, navbar, and main-content.
 
 ## Initial Setup
 
@@ -51,54 +55,78 @@ wrangler login
 
 # Create R2 bucket for MFE assets
 wrangler r2 bucket create portfolio-mfe-assets
-
-# Create Cloudflare Pages project (first deployment will create it)
-# Or create manually in Cloudflare dashboard
 ```
 
-### 2. Configure Custom Domain for R2
+The Cloudflare Pages project is auto-created on first deployment.
 
-1. Go to Cloudflare Dashboard → R2 → your bucket
-2. Click "Settings" → "Public access"
-3. Add custom domain: `assets.portfolio.dev`
-4. Enable public access
+### 2. Configure R2 Custom Domain
+
+1. Go to **Cloudflare Dashboard** → **R2** → `portfolio-mfe-assets`
+2. Click **Settings** → **Custom Domains**
+3. Add: `assets.teofe.dev` (or your subdomain)
+4. Wait for DNS propagation
 
 ### 3. Set GitHub Secrets
 
-Go to your GitHub repo → Settings → Secrets and variables → Actions
+Go to your GitHub repo → **Settings** → **Secrets and variables** → **Actions**
 
-Add these secrets:
+| Secret                  | Description                         | Where to Find                                                   |
+| ----------------------- | ----------------------------------- | --------------------------------------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | API token with required permissions | Cloudflare Dashboard → My Profile → API Tokens                  |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID          | Cloudflare Dashboard → any page → right sidebar                 |
+| `CLOUDFLARE_ZONE_ID`    | Zone ID for your domain             | Cloudflare Dashboard → select domain → Overview → right sidebar |
 
-| Secret                  | Description                           | How to Get                                      |
-| ----------------------- | ------------------------------------- | ----------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | API token with R2 + Pages permissions | Cloudflare Dashboard → My Profile → API Tokens  |
-| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID            | Cloudflare Dashboard → Overview (right sidebar) |
+### 4. API Token Permissions
 
-**API Token Permissions Required:**
+Create an API token with these permissions:
 
-- Account: Cloudflare Pages (Edit)
-- Account: R2 (Edit)
+**Account Permissions:**
 
-### 4. Update CDN Base URL
+- Cloudflare Pages: Edit
+- Workers R2 Storage: Edit
 
-In `.github/workflows/deploy-root-config.yml`, the build step uses `CDN_BASE_URL`:
+**Zone Permissions (for your domain):**
 
-```yaml
-- name: Build root-config
-  run: npm run build --workspace=@portfolio/root-config
-  env:
-    CDN_BASE_URL: https://teofe.dev
+- Cache Purge: Purge
+
+## Cache Strategy
+
+### Cache-Control Headers
+
+MFE bundles are uploaded with:
+
+```
+Cache-Control: public, max-age=0, must-revalidate
 ```
 
-Update this to match your R2 custom domain.
+This tells browsers to always revalidate with the CDN, ensuring fresh content while still benefiting from caching when content hasn't changed.
+
+### Automatic Cache Purge
+
+Each workflow automatically purges the Cloudflare CDN cache after deployment:
+
+```yaml
+- name: Purge Cloudflare Cache
+  run: |
+    curl -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
+      -H "Authorization: Bearer $API_TOKEN" \
+      --data '{"files":["https://assets.teofe.dev/navbar/portfolio-navbar.js"]}'
+```
+
+### Result
+
+- **CDN cache**: Purged on each deploy
+- **Browser cache**: Always revalidates (gets fresh content immediately)
+- **No manual cache clearing needed**
 
 ## Manual Deployment
 
-You can manually trigger any workflow from GitHub:
+Trigger any workflow manually:
 
-1. Go to Actions tab
+1. Go to **GitHub** → **Actions** tab
 2. Select the workflow
-3. Click "Run workflow"
+3. Click **"Run workflow"**
+4. Select branch and run
 
 ## Local Development
 
@@ -121,46 +149,63 @@ npm run build
 # Build individual packages
 npm run build --workspace=@portfolio/root-config
 npm run build --workspace=@portfolio/navbar
+npm run build --workspace=@portfolio/main-content
+npm run build --workspace=@portfolio/shared
 ```
 
 ## Environment Variables
 
-| Variable       | Used In           | Description                                |
-| -------------- | ----------------- | ------------------------------------------ |
-| `CDN_BASE_URL` | root-config build | Base URL for MFE assets (R2 custom domain) |
+| Variable       | Used In           | Description                                                   |
+| -------------- | ----------------- | ------------------------------------------------------------- |
+| `CDN_BASE_URL` | root-config build | Base URL for MFE assets (default: `https://assets.teofe.dev`) |
 
-## Rollback
+Set in `.github/workflows/deploy-root-config.yml`:
 
-To rollback a deployment:
-
-1. Go to GitHub → Actions
-2. Find the last successful deployment
-3. Re-run that workflow
-
-Or redeploy from a specific commit:
-
-```bash
-git checkout <commit-sha>
-# Trigger workflow manually
+```yaml
+- name: Build root-config
+  run: npm run build --workspace=@portfolio/root-config
+  env:
+    CDN_BASE_URL: https://assets.teofe.dev
 ```
 
-## Cache Invalidation
+## Troubleshooting
 
-Cloudflare CDN caches assets. To invalidate:
+### Cache Issues
+
+If users see stale content:
 
 ```bash
-# Via Wrangler
-wrangler pages deployment delete <deployment-id>
-
-# Or via API
-curl -X POST "https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache" \
-  -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+# Manually purge all cache for the zone
+curl -X POST "https://api.cloudflare.com/client/v4/zones/YOUR_ZONE_ID/purge_cache" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
   -H "Content-Type: application/json" \
-  --data '{"files":["https://teofe.dev/navbar/portfolio-navbar.js"]}'
+  --data '{"purge_everything":true}'
 ```
 
-## Monitoring
+### R2 Upload Issues
 
-- **Cloudflare Analytics**: Dashboard → Analytics
-- **GitHub Actions**: Repo → Actions (deployment logs)
-- **R2 Metrics**: Dashboard → R2 → bucket → Metrics
+Ensure you're using `--remote` flag:
+
+```bash
+wrangler r2 object put portfolio-mfe-assets/shared/file.js \
+  --file=./dist/file.js \
+  --remote  # Required for actual Cloudflare R2
+```
+
+### Authentication Errors
+
+1. Verify API token has correct permissions
+2. Check token hasn't expired
+3. Ensure zone ID is correct for cache purge
+
+## Cost Estimate
+
+For a low-traffic portfolio site: Yes, completely free. I love you Cloudflare 😌
+
+| Resource                | Estimated Cost         |
+| ----------------------- | ---------------------- |
+| Cloudflare Pages        | Free                   |
+| Cloudflare R2 (storage) | Free (10GB included)   |
+| Cloudflare R2 (egress)  | Free (no egress fees!) |
+| Custom domain SSL       | Free                   |
+| **Total**               | **$0/month**           |

@@ -56,9 +56,9 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             --data '{"files":["https://assets.teofe.dev/main-content/portfolio-main-content.js","https://assets.teofe.dev/main-content/portfolio-main-content.js.map"]}')
-          
+
           echo "$RESPONSE"
-          
+
           # Check if success is true
           if echo "$RESPONSE" | grep -q '"success":true'; then
             echo "✅ Cache purge successful"
