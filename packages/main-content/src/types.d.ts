@@ -3,7 +3,12 @@
 
 declare module "@portfolio/shared" {
   import type { Variants, HTMLMotionProps } from "framer-motion";
-  import type { ReactNode, HTMLAttributes, ForwardRefExoticComponent, RefAttributes } from "react";
+  import type {
+    ReactNode,
+    HTMLAttributes,
+    ForwardRefExoticComponent,
+    RefAttributes,
+  } from "react";
 
   // Store Types
   export type SectionId =
@@ -90,6 +95,18 @@ declare module "@portfolio/shared" {
   export const CardContent: ForwardRefExoticComponent<any>;
   export const CardFooter: ForwardRefExoticComponent<any>;
   export const Badge: ForwardRefExoticComponent<any>;
+  export const Input: ForwardRefExoticComponent<
+    React.InputHTMLAttributes<HTMLInputElement> &
+      RefAttributes<HTMLInputElement>
+  >;
+  export const Textarea: ForwardRefExoticComponent<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> &
+      RefAttributes<HTMLTextAreaElement>
+  >;
+  export const Label: ForwardRefExoticComponent<
+    React.LabelHTMLAttributes<HTMLLabelElement> &
+      RefAttributes<HTMLLabelElement>
+  >;
   export const Separator: ForwardRefExoticComponent<any>;
   export const ThemeToggle: () => JSX.Element;
 

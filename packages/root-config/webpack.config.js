@@ -18,9 +18,7 @@ module.exports = (env, argv) => {
     shared: isProduction
       ? `${cdnBaseUrl}/shared/portfolio-shared.js`
       : "http://localhost:9003/portfolio-shared.js",
-    sharedStyles: isProduction
-      ? `${cdnBaseUrl}/shared/styles.css`
-      : null, // In development, styles are injected via style-loader at runtime
+    sharedStyles: isProduction ? `${cdnBaseUrl}/shared/styles.css` : null, // In development, styles are injected via style-loader at runtime
     rootConfig: isProduction
       ? "/portfolio-root-config.js"
       : "http://localhost:9000/portfolio-root-config.js",

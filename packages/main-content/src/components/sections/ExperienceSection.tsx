@@ -112,15 +112,17 @@ export function ExperienceSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative mb-12 md:w-1/2 ${index % 2 === 0 ? "md:pr-12 md:ml-auto" : "md:pl-12"
-                }`}
+              className={`relative mb-12 md:w-1/2 ${
+                index % 2 === 0 ? "md:pr-12 md:ml-auto" : "md:pl-12"
+              }`}
             >
               {/* Timeline Dot */}
               <div
-                className={`absolute top-0 w-4 h-4 rounded-full bg-primary border-4 border-background ${index % 2 === 0
+                className={`absolute top-0 w-4 h-4 rounded-full bg-primary border-4 border-background ${
+                  index % 2 === 0
                     ? "left-0 md:-left-2 transform md:-translate-x-1/2"
                     : "left-0 md:left-auto md:-right-2 transform md:translate-x-1/2"
-                  }`}
+                }`}
               />
 
               {/* Content Card */}

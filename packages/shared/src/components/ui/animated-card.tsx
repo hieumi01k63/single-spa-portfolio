@@ -79,8 +79,7 @@ const AnimatedCardHeader = React.forwardRef<
 ));
 AnimatedCardHeader.displayName = "AnimatedCardHeader";
 
-interface AnimatedCardContentProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+interface AnimatedCardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const AnimatedCardContent = React.forwardRef<
   HTMLDivElement,
@@ -138,16 +137,17 @@ export const staggerContainerVariants: Variants = {
 
 interface StaggerContainerProps extends HTMLMotionProps<"div"> {}
 
-const StaggerContainer = React.forwardRef<HTMLDivElement, StaggerContainerProps>(
-  ({ className, variants = staggerContainerVariants, ...props }, ref) => (
-    <motion.div
-      ref={ref}
-      variants={variants}
-      className={cn("flex flex-wrap gap-2", className)}
-      {...props}
-    />
-  )
-);
+const StaggerContainer = React.forwardRef<
+  HTMLDivElement,
+  StaggerContainerProps
+>(({ className, variants = staggerContainerVariants, ...props }, ref) => (
+  <motion.div
+    ref={ref}
+    variants={variants}
+    className={cn("flex flex-wrap gap-2", className)}
+    {...props}
+  />
+));
 StaggerContainer.displayName = "StaggerContainer";
 
 export {

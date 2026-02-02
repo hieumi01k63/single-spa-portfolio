@@ -11,7 +11,9 @@ export {
   skillBadgeVariants,
 } from "./ui/animated-card";
 export { Badge, type BadgeProps } from "./ui/badge";
-export { Separator } from "./ui/separator";
+export { Input, type InputProps } from "./ui/input";
+export { Textarea, type TextareaProps } from "./ui/textarea";
+export { Label, type LabelProps } from "./ui/label";
 export { ThemeToggle } from "./ui/theme-toggle";
 
 // Animation Components

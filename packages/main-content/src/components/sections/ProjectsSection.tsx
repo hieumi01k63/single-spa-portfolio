@@ -204,7 +204,9 @@ export function ProjectsSection() {
               </div>
 
               {/* Description */}
-              <p className="text-muted-foreground mb-4">{project.description}</p>
+              <p className="text-muted-foreground mb-4">
+                {project.description}
+              </p>
 
               {/* Tech Stack */}
               <SkillBadgeContainer className="mb-4">

@@ -1,7 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Linkedin, Send } from "lucide-react";
-import { AnimatedCard, staggerContainerVariants } from "@portfolio/shared";
+import {
+  AnimatedCard,
+  staggerContainerVariants,
+  Input,
+  Textarea,
+  Label,
+} from "@portfolio/shared";
 
 const contactInfo = [
   {
@@ -57,9 +63,9 @@ export function ContactSection() {
           </h2>
           <div className="w-20 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            I'm always interested in hearing about new opportunities, challenging
-            projects, or just connecting with fellow developers. Feel free to
-            reach out!
+            I'm always interested in hearing about new opportunities,
+            challenging projects, or just connecting with fellow developers.
+            Feel free to reach out!
           </p>
         </motion.div>
 
@@ -97,7 +103,9 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground">
                         {item.label}
                       </p>
-                      <p className="text-foreground font-medium">{item.value}</p>
+                      <p className="text-foreground font-medium">
+                        {item.value}
+                      </p>
                     </div>
                   </a>
                 ) : (
@@ -109,7 +117,9 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground">
                         {item.label}
                       </p>
-                      <p className="text-foreground font-medium">{item.value}</p>
+                      <p className="text-foreground font-medium">
+                        {item.value}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -124,46 +134,16 @@ export function ContactSection() {
             </h3>
             <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm text-muted-foreground mb-2"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
-                  placeholder="Your name"
-                />
+                <Label htmlFor="name">Name</Label>
+                <Input type="text" id="name" placeholder="Your name" />
               </div>
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm text-muted-foreground mb-2"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
-                  placeholder="your@email.com"
-                />
+                <Label htmlFor="email">Email</Label>
+                <Input type="email" id="email" placeholder="your@email.com" />
               </div>
               <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm text-muted-foreground mb-2"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-lg bg-background border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors resize-none"
-                  placeholder="Your message..."
-                />
+                <Label htmlFor="message">Message</Label>
+                <Textarea id="message" rows={4} placeholder="Your message..." />
               </div>
               <motion.button
                 type="submit"
@@ -176,8 +156,8 @@ export function ContactSection() {
               </motion.button>
             </form>
             <p className="mt-4 text-xs text-center text-muted-foreground">
-              Note: This is a demo form. For actual contact, please use the email
-              or phone above.
+              Note: This is a demo form. For actual contact, please use the
+              email or phone above.
             </p>
           </AnimatedCard>
         </div>
