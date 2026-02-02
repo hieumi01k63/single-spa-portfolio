@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, MapPin, Mail, Phone } from "lucide-react";
+import { Button } from "@portfolio/shared";
 
 export function HeroSection() {
   const scrollToAbout = () => {
@@ -107,21 +108,24 @@ export function HeroSection() {
         </motion.div>
 
         {/* CTA Button */}
-        <motion.button
+        <Button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
           onClick={scrollToAbout}
-          className="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-colors"
+          size="lg"
+          rounded="full"
+          rightIcon={
+            <motion.span
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <ArrowDown className="w-4 h-4" />
+            </motion.span>
+          }
         >
           Learn more about me
-          <motion.span
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <ArrowDown className="w-4 h-4" />
-          </motion.span>
-        </motion.button>
+        </Button>
       </div>
     </section>
   );

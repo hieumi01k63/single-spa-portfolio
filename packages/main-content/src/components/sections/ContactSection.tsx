@@ -7,6 +7,7 @@ import {
   Input,
   Textarea,
   Label,
+  Button,
 } from "@portfolio/shared";
 
 const contactInfo = [
@@ -145,15 +146,15 @@ export function ContactSection() {
                 <Label htmlFor="message">Message</Label>
                 <Textarea id="message" rows={4} placeholder="Your message..." />
               </div>
-              <motion.button
+              <Button
                 type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-3 px-6 rounded-lg bg-primary text-primary-foreground font-medium flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+                size="lg"
+                fullWidth
+                animated
+                leftIcon={<Send className="w-4 h-4" />}
               >
-                <Send className="w-4 h-4" />
                 Send Message
-              </motion.button>
+              </Button>
             </form>
             <p className="mt-4 text-xs text-center text-muted-foreground">
               Note: This is a demo form. For actual contact, please use the

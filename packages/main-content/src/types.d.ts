@@ -86,8 +86,28 @@ declare module "@portfolio/shared" {
     HTMLMotionProps<"div"> & RefAttributes<HTMLDivElement>
   >;
 
+  // Button Component
+  interface ButtonProps extends HTMLMotionProps<"button"> {
+    variant?:
+      | "default"
+      | "destructive"
+      | "outline"
+      | "secondary"
+      | "ghost"
+      | "link";
+    size?: "default" | "sm" | "lg" | "icon";
+    rounded?: "default" | "full" | "lg";
+    fullWidth?: boolean;
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+    animated?: boolean;
+  }
+
+  export const Button: ForwardRefExoticComponent<
+    ButtonProps & RefAttributes<HTMLButtonElement>
+  >;
+
   // UI Components
-  export const Button: ForwardRefExoticComponent<any>;
   export const Card: ForwardRefExoticComponent<any>;
   export const CardHeader: ForwardRefExoticComponent<any>;
   export const CardTitle: ForwardRefExoticComponent<any>;
