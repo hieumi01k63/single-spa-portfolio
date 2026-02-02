@@ -68,7 +68,12 @@ module.exports = (env, argv) => {
           "X-Requested-With, content-type, Authorization",
       },
       hot: true,
+      liveReload: true,
       allowedHosts: "all",
+      // Enable HMR when page is loaded from different origin (e.g., teofe.dev)
+      client: {
+        webSocketURL: "ws://localhost:9001/ws",
+      },
     },
     devtool: isProduction ? "source-map" : "eval-source-map",
   };

@@ -53,10 +53,10 @@ module.exports = (env, argv) => {
     plugins: [
       ...(isProduction
         ? [
-            new MiniCssExtractPlugin({
-              filename: "styles.css",
-            }),
-          ]
+          new MiniCssExtractPlugin({
+            filename: "styles.css",
+          }),
+        ]
         : []),
     ],
     externalsType: "module",
@@ -83,7 +83,12 @@ module.exports = (env, argv) => {
           "X-Requested-With, content-type, Authorization",
       },
       hot: true,
+      liveReload: true,
       allowedHosts: "all",
+      // Enable HMR when page is loaded from different origin (e.g., teofe.dev)
+      client: {
+        webSocketURL: "ws://localhost:9003/ws",
+      },
     },
     devtool: isProduction ? "source-map" : "eval-source-map",
   };
