@@ -54,7 +54,6 @@ module.exports = (env, argv) => {
       "react/jsx-dev-runtime": "react/jsx-dev-runtime",
       "single-spa": "single-spa",
       "single-spa-react": "single-spa-react",
-      zustand: "zustand",
       "framer-motion": "framer-motion",
       "lucide-react": "lucide-react",
       "@portfolio/shared": "@portfolio/shared",
