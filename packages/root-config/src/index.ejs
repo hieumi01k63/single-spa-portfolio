@@ -22,10 +22,11 @@
     <link rel="stylesheet" href="<%= mfeUrls.sharedStyles %>" />
     <% } %>
 
-    <!-- Native Import Map -->
-    <script type="importmap">
-      {
-        "imports": {
+    <!-- Dynamic Import Map with Override Support -->
+    <script>
+      (function() {
+        // Base import map configuration
+        const baseImports = {
           "react": "https://esm.sh/react@18.2.0",
           "react-dom": "https://esm.sh/react-dom@18.2.0",
           "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
@@ -42,18 +43,51 @@
           "@portfolio/navbar": "<%= mfeUrls.navbar %>",
           "@portfolio/main-content": "<%= mfeUrls.mainContent %>",
           "@portfolio/shared": "<%= mfeUrls.shared %>"
+        };
+
+        // Get overrides from localStorage (import-map-overrides format)
+        const overrides = {};
+        const STORAGE_PREFIX = 'import-map-override:';
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith(STORAGE_PREFIX)) {
+            const moduleName = key.slice(STORAGE_PREFIX.length);
+            const url = localStorage.getItem(key);
+            if (url) {
+              overrides[moduleName] = url;
+              console.log(`[import-map-override] ${moduleName} -> ${url}`);
+            }
+          }
         }
-      }
+
+        // Merge base imports with overrides (overrides win)
+        const finalImports = { ...baseImports, ...overrides };
+
+        // Create and inject the import map
+        const importMapScript = document.createElement('script');
+        importMapScript.type = 'importmap';
+        importMapScript.textContent = JSON.stringify({ imports: finalImports }, null, 2);
+        document.currentScript.after(importMapScript);
+      })();
     </script>
 
-      <!-- Import Map Overrides - Development only -->
-      <script
-        type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js"
-      ></script>
-      <import-map-overrides-full
-        show-when-local-storage="devtools"
-      ></import-map-overrides-full>
+    <!--
+      Import Map Overrides UI - for managing overrides in development.
+      
+      HOW IT WORKS:
+      1. The dynamic script above reads overrides from localStorage and merges them
+         into the import map BEFORE any modules load
+      2. import-map-overrides provides the UI to set overrides (stored in localStorage)
+      3. After setting an override in the UI, refresh the page to apply it
+      
+    -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/import-map-overrides/dist/import-map-overrides.js"
+    ></script>
+    <import-map-overrides-full
+      show-when-local-storage="devtools"
+    ></import-map-overrides-full>
 
     <style>
       /* CSS Custom Properties for theming (shadcn-ui compatible) */
