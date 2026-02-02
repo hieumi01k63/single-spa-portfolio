@@ -18,6 +18,8 @@
     <link rel="preconnect" href="http://localhost:9003" />
     <% } else { %>
     <link rel="preconnect" href="<%= cdnBaseUrl %>" />
+    <!-- Load shared component styles in production -->
+    <link rel="stylesheet" href="<%= mfeUrls.sharedStyles %>" />
     <% } %>
 
     <!-- Native Import Map -->

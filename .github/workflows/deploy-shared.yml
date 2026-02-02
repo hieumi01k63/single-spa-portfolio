@@ -46,12 +46,26 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: r2 object put ${{ env.R2_BUCKET }}/shared/portfolio-shared.js.map --file=./packages/shared/dist/portfolio-shared.js.map --content-type=application/json --cache-control="public, max-age=0, must-revalidate" --remote
 
+      - name: Upload styles to R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/shared/styles.css --file=./packages/shared/dist/styles.css --content-type=text/css --cache-control="public, max-age=0, must-revalidate" --remote
+
+      - name: Upload styles source map to R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/shared/styles.css.map --file=./packages/shared/dist/styles.css.map --content-type=application/json --cache-control="public, max-age=0, must-revalidate" --remote
+
       - name: Purge Cloudflare Cache
         run: |
           RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data '{"files":["https://assets.teofe.dev/shared/portfolio-shared.js","https://assets.teofe.dev/shared/portfolio-shared.js.map"]}')
+            --data '{"files":["https://assets.teofe.dev/shared/portfolio-shared.js","https://assets.teofe.dev/shared/portfolio-shared.js.map","https://assets.teofe.dev/shared/styles.css","https://assets.teofe.dev/shared/styles.css.map"]}')
 
           echo "$RESPONSE"
 
@@ -69,6 +83,7 @@ jobs:
           echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Bundle**: \`portfolio-shared.js\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Styles**: \`styles.css\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Cache**: Purged" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> **Note:** Navbar and Main Content will rebuild automatically via path triggers." >> $GITHUB_STEP_SUMMARY
