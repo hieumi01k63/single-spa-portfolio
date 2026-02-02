@@ -7,3 +7,4 @@ declare module "*.css" {
 declare module "@portfolio/navbar";
 declare module "@portfolio/main-content";
 declare module "@portfolio/shared";
+declare module "@portfolio/not-found";
