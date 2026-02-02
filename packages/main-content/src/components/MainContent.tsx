@@ -7,6 +7,7 @@ import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { SkillsSection } from "@/components/sections/SkillsSection";
 import { AwardsSection } from "@/components/sections/AwardsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { FooterSection } from "@/components/sections/FooterSection";
 
 export function MainContent() {
   const { setActiveSection, sections } = usePortfolioStore();
@@ -41,10 +42,6 @@ export function MainContent() {
     return () => observer.disconnect();
   }, [sections, setActiveSection]);
 
-  const goToContactUsingRouter = () => {
-    history.pushState({}, "", "/contact");
-  };
-
   return (
     <div className="min-h-screen">
       <HeroSection />
@@ -54,6 +51,7 @@ export function MainContent() {
       <SkillsSection />
       <AwardsSection />
       <ContactSection />
+      <FooterSection />
     </div>
   );
 }

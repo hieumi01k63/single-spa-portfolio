@@ -6,3 +6,4 @@ export { SkillsSection } from "./SkillsSection";
 export { AwardsSection } from "./AwardsSection";
 export { EducationSection } from "./EducationSection";
 export { ContactSection } from "./ContactSection";
+export { FooterSection } from "./FooterSection";

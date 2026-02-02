@@ -181,25 +181,6 @@ export function ContactSection() {
             </p>
           </motion.div>
         </div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-16 text-center"
-        >
-          <p className="text-muted-foreground">
-            Built with <span className="text-primary">single-spa</span>,{" "}
-            <span className="text-primary">React</span>,{" "}
-            <span className="text-primary">Module Federation</span> &{" "}
-            <span className="text-primary">Framer Motion</span>
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            © {new Date().getFullYear()} Teo (Hieu Nguyen). All rights reserved.
-          </p>
-        </motion.div>
       </div>
     </section>
   );

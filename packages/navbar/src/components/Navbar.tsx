@@ -83,10 +83,9 @@ export function Navbar() {
                 className={`
                   w-full flex items-center gap-3 px-4 py-3 rounded-lg
                   text-sm font-medium transition-all duration-200
-                  ${
-                    activeSectionId === item.id
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ${activeSectionId === item.id
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }
                 `}
               >
@@ -110,7 +109,7 @@ export function Navbar() {
           {/* Social Links */}
           <div className="flex gap-2">
             <motion.a
-              href="https://github.com"
+              href="https://github.com/hieumi01k63"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
