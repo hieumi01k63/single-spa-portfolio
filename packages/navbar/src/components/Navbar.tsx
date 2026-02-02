@@ -109,7 +109,7 @@ export function Navbar() {
           {/* Social Links */}
           <div className="flex gap-2">
             <motion.a
-              href="https://github.com/hieumi01k63"
+              href="https://github.com/hieumi01k63/single-spa-portfolio"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1 }}
