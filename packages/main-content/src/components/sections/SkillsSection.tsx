@@ -1,5 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
+import {
+  AnimatedCard,
+  AnimatedCardHeader,
+  SkillBadge,
+  SkillBadgeContainer,
+  staggerContainerVariants,
+} from "@portfolio/shared";
 
 interface SkillCategory {
   name: string;
@@ -82,34 +89,6 @@ const skillCategories: SkillCategory[] = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
-
-const skillVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.3 },
-  },
-};
-
 export function SkillsSection() {
   return (
     <section id="skills" className="py-24 px-6">
@@ -133,42 +112,21 @@ export function SkillsSection() {
 
         {/* Skills Grid */}
         <motion.div
-          variants={containerVariants}
+          variants={staggerContainerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {skillCategories.map((category) => (
-            <motion.div
-              key={category.name}
-              variants={cardVariants}
-              className="p-5 rounded-xl bg-card border border-border hover:border-primary/50 transition-colors duration-300"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xl" role="img" aria-label={category.name}>
-                  {category.icon}
-                </span>
-                <h3 className="text-sm font-semibold text-foreground">
-                  {category.name}
-                </h3>
-              </div>
-              <motion.div
-                variants={containerVariants}
-                className="flex flex-wrap gap-2"
-              >
+            <AnimatedCard key={category.name}>
+              <AnimatedCardHeader icon={category.icon} title={category.name} />
+              <SkillBadgeContainer>
                 {category.skills.map((skill) => (
-                  <motion.span
-                    key={skill}
-                    variants={skillVariants}
-                    whileHover={{ scale: 1.05 }}
-                    className="px-3 py-1 text-xs font-medium rounded-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200 cursor-default"
-                  >
-                    {skill}
-                  </motion.span>
+                  <SkillBadge key={skill} skill={skill} />
                 ))}
-              </motion.div>
-            </motion.div>
+              </SkillBadgeContainer>
+            </AnimatedCard>
           ))}
         </motion.div>
       </div>

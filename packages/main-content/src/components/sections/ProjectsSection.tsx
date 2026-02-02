@@ -1,6 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Zap, TrendingUp, Clock, TestTube } from "lucide-react";
+import {
+  AnimatedCard,
+  SkillBadge,
+  SkillBadgeContainer,
+  staggerContainerVariants,
+} from "@portfolio/shared";
 
 interface Project {
   name: string;
@@ -166,16 +172,15 @@ export function ProjectsSection() {
         </motion.div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.name}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300"
-            >
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 gap-8"
+        >
+          {projects.map((project) => (
+            <AnimatedCard key={project.name} className="group p-6">
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -199,21 +204,14 @@ export function ProjectsSection() {
               </div>
 
               {/* Description */}
-              <p className="text-muted-foreground mb-4">
-                {project.description}
-              </p>
+              <p className="text-muted-foreground mb-4">{project.description}</p>
 
               {/* Tech Stack */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <SkillBadgeContainer className="mb-4">
                 {project.techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2 py-1 text-xs rounded-full bg-secondary text-secondary-foreground"
-                  >
-                    {tech}
-                  </span>
+                  <SkillBadge key={tech} skill={tech} />
                 ))}
-              </div>
+              </SkillBadgeContainer>
 
               {/* Achievements */}
               <ul className="space-y-2">
@@ -227,9 +225,9 @@ export function ProjectsSection() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
+            </AnimatedCard>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Trophy, Calendar, Building2 } from "lucide-react";
+import { AnimatedCard, staggerContainerVariants } from "@portfolio/shared";
 
 interface Award {
   title: string;
@@ -40,6 +41,16 @@ const awards: Award[] = [
   },
 ];
 
+// Custom variants for award cards with scale effect
+const awardCardVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5 },
+  },
+};
+
 export function AwardsSection() {
   return (
     <section id="awards" className="py-24 px-6 bg-muted/30">
@@ -59,16 +70,19 @@ export function AwardsSection() {
         </motion.div>
 
         {/* Awards Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {awards.map((award, index) => (
-            <motion.div
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid md:grid-cols-2 gap-6"
+        >
+          {awards.map((award) => (
+            <AnimatedCard
               key={award.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={awardCardVariants}
               whileHover={{ y: -5 }}
-              className="relative p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300 overflow-hidden"
+              className="relative p-6 overflow-hidden"
             >
               {/* Trophy Icon Background */}
               <div className="absolute top-4 right-4 text-primary/10">
@@ -98,9 +112,9 @@ export function AwardsSection() {
 
                 <p className="text-muted-foreground">{award.description}</p>
               </div>
-            </motion.div>
+            </AnimatedCard>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

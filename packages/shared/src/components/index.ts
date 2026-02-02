@@ -1,13 +1,15 @@
 // UI Components
 export { Button, type ButtonProps } from "./ui/button";
 export {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "./ui/card";
+  AnimatedCard,
+  AnimatedCardHeader,
+  AnimatedCardContent,
+  SkillBadge,
+  StaggerContainer as SkillBadgeContainer,
+  cardVariants,
+  staggerContainerVariants,
+  skillBadgeVariants,
+} from "./ui/animated-card";
 export { Badge, type BadgeProps } from "./ui/badge";
 export { Separator } from "./ui/separator";
 export { ThemeToggle } from "./ui/theme-toggle";

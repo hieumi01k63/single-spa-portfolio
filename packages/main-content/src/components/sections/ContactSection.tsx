@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Linkedin, Github, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Send } from "lucide-react";
+import { AnimatedCard, staggerContainerVariants } from "@portfolio/shared";
 
 const contactInfo = [
   {
@@ -29,6 +30,16 @@ const contactInfo = [
   },
 ];
 
+// Contact card variant with slide from left
+const contactCardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4 },
+  },
+};
+
 export function ContactSection() {
   return (
     <section id="contact" className="py-24 px-6">
@@ -46,28 +57,27 @@ export function ContactSection() {
           </h2>
           <div className="w-20 h-1 bg-primary mx-auto rounded-full mb-6" />
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            I'm always interested in hearing about new opportunities,
-            challenging projects, or just connecting with fellow developers.
-            Feel free to reach out!
+            I'm always interested in hearing about new opportunities, challenging
+            projects, or just connecting with fellow developers. Feel free to
+            reach out!
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={staggerContainerVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            {contactInfo.map((item, index) => (
-              <motion.div
+            {contactInfo.map((item) => (
+              <AnimatedCard
                 key={item.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
+                variants={contactCardVariants}
+                className="p-4"
+                hoverBorder={!!item.href}
               >
                 {item.href ? (
                   <a
@@ -78,7 +88,7 @@ export function ContactSection() {
                         ? "noopener noreferrer"
                         : undefined
                     }
-                    className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-300 group"
+                    className="flex items-center gap-4 group"
                   >
                     <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       {item.icon}
@@ -87,13 +97,11 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground">
                         {item.label}
                       </p>
-                      <p className="text-foreground font-medium">
-                        {item.value}
-                      </p>
+                      <p className="text-foreground font-medium">{item.value}</p>
                     </div>
                   </a>
                 ) : (
-                  <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border">
+                  <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                       {item.icon}
                     </div>
@@ -101,24 +109,16 @@ export function ContactSection() {
                       <p className="text-sm text-muted-foreground">
                         {item.label}
                       </p>
-                      <p className="text-foreground font-medium">
-                        {item.value}
-                      </p>
+                      <p className="text-foreground font-medium">{item.value}</p>
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </AnimatedCard>
             ))}
           </motion.div>
 
-          {/* Contact Form Placeholder */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="p-6 rounded-xl bg-card border border-border"
-          >
+          {/* Contact Form */}
+          <AnimatedCard className="p-6">
             <h3 className="text-xl font-semibold text-foreground mb-6">
               Send a Message
             </h3>
@@ -176,10 +176,10 @@ export function ContactSection() {
               </motion.button>
             </form>
             <p className="mt-4 text-xs text-center text-muted-foreground">
-              Note: This is a demo form. For actual contact, please use the
-              email or phone above.
+              Note: This is a demo form. For actual contact, please use the email
+              or phone above.
             </p>
-          </motion.div>
+          </AnimatedCard>
         </div>
       </div>
     </section>

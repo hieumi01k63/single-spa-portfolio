@@ -1,6 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { GraduationCap, MapPin, Calendar, BookOpen } from "lucide-react";
+import {
+  AnimatedCard,
+  SkillBadge,
+  SkillBadgeContainer,
+} from "@portfolio/shared";
+
+const foundationAreas = [
+  "Data Structures",
+  "Algorithms",
+  "Mathematics",
+  "Computer Science",
+  "Software Engineering",
+  "Web Development",
+];
 
 export function EducationSection() {
   return (
@@ -21,13 +35,7 @@ export function EducationSection() {
         </motion.div>
 
         {/* Education Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="relative p-8 rounded-xl bg-card border border-border overflow-hidden"
-        >
+        <AnimatedCard className="relative p-8 overflow-hidden">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
@@ -78,27 +86,15 @@ export function EducationSection() {
                 <h4 className="text-sm font-semibold text-foreground mb-3">
                   Foundation Areas
                 </h4>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    "Data Structures",
-                    "Algorithms",
-                    "Mathematics",
-                    "Computer Science",
-                    "Software Engineering",
-                    "Web Development",
-                  ].map((item) => (
-                    <span
-                      key={item}
-                      className="px-3 py-1 text-sm rounded-full bg-secondary text-secondary-foreground"
-                    >
-                      {item}
-                    </span>
+                <SkillBadgeContainer>
+                  {foundationAreas.map((item) => (
+                    <SkillBadge key={item} skill={item} />
                   ))}
-                </div>
+                </SkillBadgeContainer>
               </div>
             </div>
           </div>
-        </motion.div>
+        </AnimatedCard>
       </div>
     </section>
   );
