@@ -15,7 +15,7 @@
     "start:navbar": "npm run start --workspace=@portfolio/navbar",
     "start:main-content": "npm run start --workspace=@portfolio/main-content",
     "start:not-found": "npm run start --workspace=@portfolio/not-found",
-    "dev": "concurrently -n shared,navbar,main,404,root -c blue,green,yellow,red,magenta \"npm run start:shared\" \"npm run start:navbar\" \"npm run start:main-content\" \"npm run start:not-found\" \"npm run start:root-config\"",
+    "dev": "concurrently -n shared,navbar,main,404-page,root -c blue,green,yellow,gray,magenta \"npm run start:shared\" \"npm run start:navbar\" \"npm run start:main-content\" \"npm run start:not-found\" \"npm run start:root-config\"",
     "build": "npm-run-all build:*",
     "build:shared": "npm run build --workspace=@portfolio/shared",
     "build:navbar": "npm run build --workspace=@portfolio/navbar",
