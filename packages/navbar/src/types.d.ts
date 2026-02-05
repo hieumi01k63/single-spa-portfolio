@@ -1,5 +1,6 @@
 /// <reference types="react" />
 /// <reference types="react-dom" />
+/// <reference types="@rspack/core/module" />
 
 declare module "@portfolio/shared" {
   export type SectionId =

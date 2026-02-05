@@ -23,6 +23,7 @@ module.exports = (env, argv) => {
       : "http://localhost:9004/portfolio-not-found.js",
     sharedStyles: isProduction ? `${cdnBaseUrl}/shared/styles.css` : null, // In development, styles are injected via style-loader at runtime
     notFoundStyles: isProduction ? `${cdnBaseUrl}/not-found/styles.css` : null,
+    navbarStyles: isProduction ? `${cdnBaseUrl}/navbar/portfolio-navbar.css` : null,
     rootConfig: isProduction
       ? "/portfolio-root-config.js"
       : "http://localhost:9000/portfolio-root-config.js",

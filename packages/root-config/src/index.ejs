@@ -19,8 +19,9 @@
     <link rel="preconnect" href="http://localhost:9004" />
     <% } else { %>
     <link rel="preconnect" href="<%= cdnBaseUrl %>" />
-    <!-- Load shared component styles in production -->
+    <!-- Load MFE styles in production -->
     <link rel="stylesheet" href="<%= mfeUrls.sharedStyles %>" />
+    <link rel="stylesheet" href="<%= mfeUrls.navbarStyles %>" />
     <link rel="stylesheet" href="<%= mfeUrls.notFoundStyles %>" />
     <% } %>
 

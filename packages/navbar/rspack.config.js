@@ -1,4 +1,5 @@
 const path = require("path");
+const { CssExtractRspackPlugin } = require("@rspack/core");
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === "production";
@@ -10,6 +11,7 @@ module.exports = (env, argv) => {
     },
     output: {
       filename: "portfolio-navbar.js",
+      cssFilename: "portfolio-navbar.css",
       path: path.resolve(__dirname, "dist"),
       publicPath: isProduction ? "/" : "http://localhost:9001/",
       clean: true,
@@ -23,25 +25,67 @@ module.exports = (env, argv) => {
         "@": path.resolve(__dirname, "src"),
       },
     },
+    plugins: isProduction
+      ? [
+          new CssExtractRspackPlugin({
+            filename: "portfolio-navbar.css",
+          }),
+        ]
+      : [],
     module: {
       rules: [
         {
-          test: /\.(ts|tsx|js|jsx)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: {
-              presets: [
-                "@babel/preset-env",
-                ["@babel/preset-react", { runtime: "automatic" }],
-                "@babel/preset-typescript",
-              ],
-            },
-          },
+          test: /\.css$/i,
+          use: [
+            isProduction ? CssExtractRspackPlugin.loader : "style-loader",
+            "css-loader",
+            "postcss-loader",
+          ],
         },
         {
-          test: /\.css$/,
-          use: ["style-loader", "css-loader", "postcss-loader"],
+          test: /\.ts$/,
+          exclude: [/node_modules/],
+          loader: 'builtin:swc-loader',
+          options: {
+            jsc: {
+              parser: {
+                syntax: 'typescript',
+              },
+            },
+          },
+          type: 'javascript/auto',
+        },
+        {
+          test: /\.jsx$/,
+          exclude: [/node_modules/],
+          use: {
+            loader: 'builtin:swc-loader',
+            options: {
+              jsc: {
+                parser: {
+                  syntax: 'ecmascript',
+                  jsx: true,
+                },
+              },
+            },
+          },
+          type: 'javascript/auto',
+        },
+        {
+          test: /\.tsx$/,
+          exclude: [/node_modules/],
+          use: {
+            loader: 'builtin:swc-loader',
+            options: {
+              jsc: {
+                parser: {
+                  syntax: 'typescript',
+                  tsx: true,
+                },
+              },
+            },
+          },
+          type: 'javascript/auto',
         },
       ],
     },
