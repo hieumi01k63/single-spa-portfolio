@@ -18,7 +18,11 @@ module.exports = (env, argv) => {
     shared: isProduction
       ? `${cdnBaseUrl}/shared/portfolio-shared.js`
       : "http://localhost:9003/portfolio-shared.js",
+    notFound: isProduction
+      ? `${cdnBaseUrl}/not-found/portfolio-not-found.js`
+      : "http://localhost:9004/portfolio-not-found.js",
     sharedStyles: isProduction ? `${cdnBaseUrl}/shared/styles.css` : null, // In development, styles are injected via style-loader at runtime
+    notFoundStyles: isProduction ? `${cdnBaseUrl}/not-found/styles.css` : null,
     rootConfig: isProduction
       ? "/portfolio-root-config.js"
       : "http://localhost:9000/portfolio-root-config.js",
@@ -74,6 +78,7 @@ module.exports = (env, argv) => {
       "single-spa": "single-spa",
       "@portfolio/navbar": "@portfolio/navbar",
       "@portfolio/main-content": "@portfolio/main-content",
+      "@portfolio/not-found": "@portfolio/not-found",
     },
     devServer: {
       port: 9000,

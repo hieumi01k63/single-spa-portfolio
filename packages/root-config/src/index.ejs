@@ -16,10 +16,12 @@
     <link rel="preconnect" href="http://localhost:9001" />
     <link rel="preconnect" href="http://localhost:9002" />
     <link rel="preconnect" href="http://localhost:9003" />
+    <link rel="preconnect" href="http://localhost:9004" />
     <% } else { %>
     <link rel="preconnect" href="<%= cdnBaseUrl %>" />
     <!-- Load shared component styles in production -->
     <link rel="stylesheet" href="<%= mfeUrls.sharedStyles %>" />
+    <link rel="stylesheet" href="<%= mfeUrls.notFoundStyles %>" />
     <% } %>
 
     <!-- Dynamic Import Map with Override Support -->
@@ -42,7 +44,8 @@
           "tailwind-merge": "https://esm.sh/tailwind-merge@2.2.0",
           "@portfolio/navbar": "<%= mfeUrls.navbar %>",
           "@portfolio/main-content": "<%= mfeUrls.mainContent %>",
-          "@portfolio/shared": "<%= mfeUrls.shared %>"
+          "@portfolio/shared": "<%= mfeUrls.shared %>",
+          "@portfolio/not-found": "<%= mfeUrls.notFound %>"
         };
 
         // Get overrides from localStorage (import-map-overrides format)
@@ -158,6 +161,11 @@
           color 0.3s ease;
       }
 
+      /* MFE container visibility */
+      .mfe-hidden {
+        display: none !important;
+      }
+
       /* Layout for micro-frontends */
       #navbar-container {
         position: fixed;
@@ -194,6 +202,9 @@
 
     <!-- Container for main-content micro-frontend -->
     <main id="main-content-container"></main>
+
+    <!-- Container for 404 not-found micro-frontend -->
+    <div id="not-found-container"></div>
 
     <!-- Bootstrap single-spa with native ES modules -->
     <script type="module" src="<%= mfeUrls.rootConfig %>"></script>
