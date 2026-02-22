@@ -1,3 +1,6 @@
+// 3D Components
+export { ParticleField, type ParticleFieldProps } from "./3d";
+
 // UI Components
 export { Button, type ButtonProps } from "./ui/button";
 export {

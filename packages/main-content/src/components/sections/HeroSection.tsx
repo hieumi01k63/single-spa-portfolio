@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, MapPin, Mail, Phone } from "lucide-react";
-import { Button } from "@portfolio/shared";
+import { Button, ParticleField } from "@portfolio/shared";
 
 export function HeroSection() {
   const scrollToAbout = () => {
@@ -13,33 +13,16 @@ export function HeroSection() {
       id="hero"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
-
-      {/* Animated background circles */}
-      <motion.div
-        className="absolute top-20 right-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="absolute bottom-20 left-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl"
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.5, 0.3, 0.5],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+      {/* Interactive particle background */}
+      <ParticleField
+        count={200}
+        globeSize={1.2}
+        particleScale={1.3}
+        ringRadius={0.05}
+        ringWidth={0.3}
+        displacement={0.05}
+        heartbeatScale={5}
+        swimSpeed={0.8}
       />
 
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">

@@ -41,6 +41,10 @@ module.exports = (env, argv) => {
           },
         },
         {
+          test: /\.glsl$/,
+          type: 'asset/source',
+        },
+        {
           test: /\.css$/,
           use: [
             isProduction ? MiniCssExtractPlugin.loader : "style-loader",
