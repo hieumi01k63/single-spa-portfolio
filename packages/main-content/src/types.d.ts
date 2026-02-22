@@ -136,6 +136,24 @@ declare module "@portfolio/shared" {
   export const StaggerContainer: ForwardRefExoticComponent<any>;
   export const StaggerItem: ForwardRefExoticComponent<any>;
 
+  // 3D Components
+  export interface ParticleFieldProps {
+    count?: number;
+    globeSize?: number;
+    particleScale?: number;
+    ringRadius?: number;
+    ringWidth?: number;
+    displacement?: number;
+    heartbeatScale?: number;
+    swimSpeed?: number;
+    colors?: [string, string, string];
+    className?: string;
+    theme?: "light" | "dark";
+  }
+  export const ParticleField: ForwardRefExoticComponent<
+    ParticleFieldProps & RefAttributes<HTMLDivElement>
+  >;
+
   // Utility Functions
   export function cn(...inputs: any[]): string;
 }
