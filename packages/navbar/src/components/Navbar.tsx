@@ -1,5 +1,6 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
   User,
@@ -7,14 +8,19 @@ import {
   FolderKanban,
   Code2,
   Award,
-  GraduationCap,
   Mail,
   Moon,
   Sun,
   Github,
   Linkedin,
+  Menu,
+  X,
 } from "lucide-react";
-import { usePortfolioStore, type SectionId } from "@portfolio/shared";
+import {
+  usePortfolioStore,
+  useMediaQuery,
+  type SectionId,
+} from "@portfolio/shared";
 
 const navItems: { id: SectionId; label: string; icon: React.ReactNode }[] = [
   { id: "hero", label: "Home", icon: <Home className="w-5 h-5" /> },
@@ -31,41 +37,26 @@ const navItems: { id: SectionId; label: string; icon: React.ReactNode }[] = [
   },
   { id: "skills", label: "Skills", icon: <Code2 className="w-5 h-5" /> },
   { id: "awards", label: "Awards", icon: <Award className="w-5 h-5" /> },
-  // { id: "education", label: "Education", icon: <GraduationCap className="w-5 h-5" /> },
   { id: "contact", label: "Contact", icon: <Mail className="w-5 h-5" /> },
 ];
 
-export function Navbar() {
-  const { activeSectionId, setActiveSection, isDarkMode, toggleDarkMode } =
-    usePortfolioStore();
-
-  const handleNavClick = (sectionId: SectionId) => {
-    setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+function NavContent({
+  onNavClick,
+}: {
+  onNavClick: (sectionId: SectionId) => void;
+}) {
+  const { activeSectionId, isDarkMode, toggleDarkMode } = usePortfolioStore();
 
   return (
-    <motion.nav
-      initial={{ x: -280 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-      className="h-full bg-background/80 backdrop-blur-lg border-r border-border flex flex-col"
-    >
+    <>
       {/* Logo / Name */}
       <div className="p-6 border-b border-border">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <div>
           <h1 className="text-2xl font-bold text-foreground">Teo</h1>
           <p className="text-sm text-muted-foreground">
             Senior Frontend Engineer
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Navigation Items */}
@@ -76,16 +67,17 @@ export function Navbar() {
               key={item.id}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * (index + 1) }}
+              transition={{ delay: 0.05 * (index + 1) }}
             >
               <button
-                onClick={() => handleNavClick(item.id)}
+                onClick={() => onNavClick(item.id)}
                 className={`
                   w-full flex items-center gap-3 px-4 py-3 rounded-lg
                   text-sm font-medium transition-all duration-200
-                  ${activeSectionId === item.id
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ${
+                    activeSectionId === item.id
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
                   }
                 `}
               >
@@ -154,6 +146,102 @@ export function Navbar() {
           </motion.button>
         </div>
       </div>
-    </motion.nav>
+    </>
+  );
+}
+
+export function Navbar() {
+  const { isMobileMenuOpen, setMobileMenuOpen, setActiveSection } =
+    usePortfolioStore();
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Close drawer when switching to desktop
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileMenuOpen(false);
+    }
+  }, [isMobile, setMobileMenuOpen]);
+
+  const handleNavClick = (sectionId: SectionId) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    if (isMobile) {
+      setMobileMenuOpen(false);
+    }
+  };
+
+  // Desktop: full sidebar
+  if (!isMobile) {
+    return (
+      <motion.nav
+        initial={{ x: -280 }}
+        animate={{ x: 0 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+        className="h-full bg-background/80 backdrop-blur-lg border-r border-border flex flex-col"
+      >
+        <NavContent onNavClick={handleNavClick} />
+      </motion.nav>
+    );
+  }
+
+  // Mobile: top bar + drawer
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-lg border-b border-border">
+        <div>
+          <h1 className="text-lg font-bold text-foreground">Teo</h1>
+          <p className="text-xs text-muted-foreground">
+            Senior Frontend Engineer
+          </p>
+        </div>
+        <motion.button
+          onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+          whileTap={{ scale: 0.9 }}
+          className="p-2 rounded-lg text-foreground hover:bg-accent transition-colors"
+          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+        >
+          {isMobileMenuOpen ? (
+            <X className="w-6 h-6" />
+          ) : (
+            <Menu className="w-6 h-6" />
+          )}
+        </motion.button>
+      </div>
+
+      {/* Drawer portaled to body so it's independent of parent container */}
+      {createPortal(
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/50 z-40"
+              />
+
+              {/* Drawer */}
+              <motion.nav
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                className="fixed top-0 left-0 w-72 h-full bg-background border-r border-border flex flex-col z-50 shadow-2xl"
+              >
+                <NavContent onNavClick={handleNavClick} />
+              </motion.nav>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 }

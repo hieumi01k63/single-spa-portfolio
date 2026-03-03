@@ -32,6 +32,7 @@ declare module "@portfolio/shared" {
   }
 
   export const usePortfolioStore: () => PortfolioState;
+  export function useMediaQuery(query: string): boolean;
 }
 
 declare module "*.css" {
