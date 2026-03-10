@@ -32,9 +32,10 @@ const skillCategories: SkillCategory[] = [
       "Tailwind CSS",
       "Shadcn-ui",
       "Framer Motion",
-      "Styled Components",
-      "Linaria",
       "SASS/SCSS",
+      "Linaria",
+      "Three.js",
+      "Rive Animation",
     ],
   },
   {
