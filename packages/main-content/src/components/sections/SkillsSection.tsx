@@ -1,6 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
+  Atom,
+  RefreshCw,
+  Palette,
+  Building2,
+  FlaskConical,
+  Wrench,
+  Code,
+  ClipboardList,
+  type LucideIcon,
+} from "lucide-react";
+import {
   AnimatedCard,
   AnimatedCardHeader,
   SkillBadge,
@@ -10,24 +21,24 @@ import {
 
 interface SkillCategory {
   name: string;
-  icon: string;
+  icon: LucideIcon;
   skills: string[];
 }
 
 const skillCategories: SkillCategory[] = [
   {
     name: "Frontend Frameworks",
-    icon: "⚛️",
+    icon: Atom,
     skills: ["React", "Next.js", "Remix", "Vue 3", "Astro", "React Native"],
   },
   {
     name: "State Management",
-    icon: "🔄",
+    icon: RefreshCw,
     skills: ["Zustand", "Redux", "TanStack Query", "Jotai", "Pinia"],
   },
   {
     name: "Styling & UI",
-    icon: "🎨",
+    icon: Palette,
     skills: [
       "Tailwind CSS",
       "Shadcn-ui",
@@ -40,7 +51,7 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: "Build & Architecture",
-    icon: "🏗️",
+    icon: Building2,
     skills: [
       "Webpack",
       "Vite",
@@ -51,7 +62,7 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: "Testing",
-    icon: "🧪",
+    icon: FlaskConical,
     skills: [
       "Jest",
       "Vitest",
@@ -62,7 +73,7 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: "DevOps & Tools",
-    icon: "🛠️",
+    icon: Wrench,
     skills: [
       "Git",
       "Docker",
@@ -74,12 +85,12 @@ const skillCategories: SkillCategory[] = [
   },
   {
     name: "Core Languages",
-    icon: "💻",
+    icon: Code,
     skills: ["TypeScript", "JavaScript", "HTML5", "CSS3"],
   },
   {
     name: "Other Skills",
-    icon: "📋",
+    icon: ClipboardList,
     skills: [
       "Agile/Scrum",
       "Code Review",
@@ -119,16 +130,19 @@ export function SkillsSection() {
           viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {skillCategories.map((category) => (
+          {skillCategories.map((category) => {
+            const Icon = category.icon;
+            return (
             <AnimatedCard key={category.name}>
-              <AnimatedCardHeader icon={category.icon} title={category.name} />
+              <AnimatedCardHeader icon={<Icon size={18} />} title={category.name} />
               <SkillBadgeContainer>
                 {category.skills.map((skill) => (
                   <SkillBadge key={skill} skill={skill} />
                 ))}
               </SkillBadgeContainer>
             </AnimatedCard>
-          ))}
+            );
+          })}
         </motion.div>
       </div>
     </section>
