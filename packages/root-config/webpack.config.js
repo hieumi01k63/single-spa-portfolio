@@ -21,9 +21,13 @@ module.exports = (env, argv) => {
     notFound: isProduction
       ? `${cdnBaseUrl}/not-found/portfolio-not-found.js`
       : "http://localhost:9004/portfolio-not-found.js",
+    mediaUpload: isProduction
+      ? `${cdnBaseUrl}/media-upload/portfolio-media-upload.js`
+      : "http://localhost:9005/portfolio-media-upload.js",
     sharedStyles: isProduction ? `${cdnBaseUrl}/shared/styles.css` : null, // In development, styles are injected via style-loader at runtime
     notFoundStyles: isProduction ? `${cdnBaseUrl}/not-found/styles.css` : null,
     navbarStyles: isProduction ? `${cdnBaseUrl}/navbar/portfolio-navbar.css` : null,
+    mediaUploadStyles: isProduction ? `${cdnBaseUrl}/media-upload/portfolio-media-upload.css` : null,
     rootConfig: isProduction
       ? "/portfolio-root-config.js"
       : "http://localhost:9000/portfolio-root-config.js",
@@ -80,6 +84,7 @@ module.exports = (env, argv) => {
       "@portfolio/navbar": "@portfolio/navbar",
       "@portfolio/main-content": "@portfolio/main-content",
       "@portfolio/not-found": "@portfolio/not-found",
+      "@portfolio/media-upload": "@portfolio/media-upload",
     },
     devServer: {
       port: 9000,

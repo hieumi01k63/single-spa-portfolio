@@ -17,12 +17,14 @@
     <link rel="preconnect" href="http://localhost:9002" />
     <link rel="preconnect" href="http://localhost:9003" />
     <link rel="preconnect" href="http://localhost:9004" />
+    <link rel="preconnect" href="http://localhost:9005" />
     <% } else { %>
     <link rel="preconnect" href="<%= cdnBaseUrl %>" />
     <!-- Load MFE styles in production -->
     <link rel="stylesheet" href="<%= mfeUrls.sharedStyles %>" />
     <link rel="stylesheet" href="<%= mfeUrls.navbarStyles %>" />
     <link rel="stylesheet" href="<%= mfeUrls.notFoundStyles %>" />
+    <link rel="stylesheet" href="<%= mfeUrls.mediaUploadStyles %>" />
     <% } %>
 
     <!-- Dynamic Import Map with Override Support -->
@@ -46,7 +48,8 @@
           "@portfolio/navbar": "<%= mfeUrls.navbar %>",
           "@portfolio/main-content": "<%= mfeUrls.mainContent %>",
           "@portfolio/shared": "<%= mfeUrls.shared %>",
-          "@portfolio/not-found": "<%= mfeUrls.notFound %>"
+          "@portfolio/not-found": "<%= mfeUrls.notFound %>",
+          "@portfolio/media-upload": "<%= mfeUrls.mediaUpload %>"
         };
 
         // Get overrides from localStorage (import-map-overrides format)
@@ -203,6 +206,9 @@
 
     <!-- Container for main-content micro-frontend -->
     <main id="main-content-container"></main>
+
+    <!-- Container for media-upload micro-frontend -->
+    <div id="media-upload-container"></div>
 
     <!-- Container for 404 not-found micro-frontend -->
     <div id="not-found-container"></div>

@@ -32,23 +32,31 @@ function isHomePage(location: Location): boolean {
   return location.pathname === "/" || location.pathname === "";
 }
 
+function isMediaUploadPage(location: Location): boolean {
+  return location.pathname === "/media-upload";
+}
+
 function isNotFoundPage(location: Location): boolean {
-  return !isHomePage(location);
+  return !isHomePage(location) && !isMediaUploadPage(location);
 }
 
 // Container visibility management
 const containers = {
   navbar: document.getElementById("navbar-container"),
   mainContent: document.getElementById("main-content-container"),
+  mediaUpload: document.getElementById("media-upload-container"),
   notFound: document.getElementById("not-found-container"),
 };
 
 function updateContainerVisibility(): void {
   const showHome = isHomePage(window.location);
+  const showMediaUpload = isMediaUploadPage(window.location);
+  const showNotFound = !showHome && !showMediaUpload;
 
   containers.navbar?.classList.toggle("mfe-hidden", !showHome);
   containers.mainContent?.classList.toggle("mfe-hidden", !showHome);
-  containers.notFound?.classList.toggle("mfe-hidden", showHome);
+  containers.mediaUpload?.classList.toggle("mfe-hidden", !showMediaUpload);
+  containers.notFound?.classList.toggle("mfe-hidden", !showNotFound);
 }
 
 // Set initial visibility and listen for route changes
@@ -72,6 +80,16 @@ registerApplication({
   activeWhen: isHomePage,
   customProps: {
     domElement: document.getElementById("main-content-container"),
+  },
+});
+
+// Register media-upload micro-frontend
+registerApplication({
+  name: "@portfolio/media-upload",
+  app: () => import("@portfolio/media-upload") as Promise<LifeCycles>,
+  activeWhen: isMediaUploadPage,
+  customProps: {
+    domElement: document.getElementById("media-upload-container"),
   },
 });
 

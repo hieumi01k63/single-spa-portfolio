@@ -1,0 +1,91 @@
+name: Deploy Media Upload
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/media-upload/**"
+      - "packages/shared/**" # Rebuild when shared changes
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  NODE_VERSION: "22"
+  R2_BUCKET: "portfolio-mfe-assets"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build & Deploy Media Upload to R2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build shared (dependency)
+        run: npm run build --workspace=@portfolio/shared
+
+      - name: Build media-upload
+        run: npm run build --workspace=@portfolio/media-upload
+
+      - name: Deploy JS to Cloudflare R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/media-upload/portfolio-media-upload.js --file=./packages/media-upload/dist/portfolio-media-upload.js --content-type=application/javascript --cache-control="public, max-age=0, must-revalidate" --remote
+
+      - name: Upload JS source map to R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/media-upload/portfolio-media-upload.js.map --file=./packages/media-upload/dist/portfolio-media-upload.js.map --content-type=application/json --cache-control="public, max-age=0, must-revalidate" --remote
+
+      - name: Deploy CSS to Cloudflare R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/media-upload/portfolio-media-upload.css --file=./packages/media-upload/dist/portfolio-media-upload.css --content-type=text/css --cache-control="public, max-age=0, must-revalidate" --remote
+
+      - name: Upload CSS source map to R2
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: r2 object put ${{ env.R2_BUCKET }}/media-upload/portfolio-media-upload.css.map --file=./packages/media-upload/dist/portfolio-media-upload.css.map --content-type=application/json --cache-control="public, max-age=0, must-revalidate" --remote
+
+      - name: Purge Cloudflare Cache
+        run: |
+          RESPONSE=$(curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"files":["https://assets.teofe.dev/media-upload/portfolio-media-upload.js","https://assets.teofe.dev/media-upload/portfolio-media-upload.js.map","https://assets.teofe.dev/media-upload/portfolio-media-upload.css","https://assets.teofe.dev/media-upload/portfolio-media-upload.css.map"]}')
+
+          echo "$RESPONSE"
+
+          # Check if success is true
+          if echo "$RESPONSE" | grep -q '"success":true'; then
+            echo "✅ Cache purge successful"
+          else
+            echo "❌ Cache purge failed"
+            exit 1
+          fi
+
+      - name: Summary
+        run: |
+          echo "## Media Upload Deployment Complete :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **JS Bundle**: \`portfolio-media-upload.js\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **CSS Bundle**: \`portfolio-media-upload.css\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Cache**: Purged" >> $GITHUB_STEP_SUMMARY
